@@ -1,3 +1,5 @@
+package bootstrap;
+
 import org.neo4j.driver.*;
 
 import java.sql.ResultSet;

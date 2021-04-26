@@ -6,9 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Thesis" />
-        <module name="concurrency-control-neo4j" />
         <module name="neo4j-java-driver" />
+        <module name="Thesis" />
+        <module name="users-simulator" />
+        <module name="btree-locking" />
       </profile>
     </annotationProcessing>
   </component>

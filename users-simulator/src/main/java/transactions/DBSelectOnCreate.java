@@ -1,4 +1,4 @@
-package dbms.txmanager;
+package transactions;
 
 /**
  * @author weat0212@gmail.com

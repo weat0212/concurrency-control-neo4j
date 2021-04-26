@@ -1,4 +1,4 @@
-package dbms.txmanager;
+package transactions;
 
 import java.util.List;
 

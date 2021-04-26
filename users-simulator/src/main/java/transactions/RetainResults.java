@@ -1,4 +1,4 @@
-package dbms.txmanager;
+package transactions;
 
 import authentication.BasicAuth;
 import org.neo4j.driver.*;
