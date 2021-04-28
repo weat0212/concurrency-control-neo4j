@@ -21,6 +21,8 @@
     </properties>
 
     <dependencies>
+
+        <!--Neo4j-->
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
@@ -29,19 +31,26 @@
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-graph-algo</artifactId>
+            <artifactId>neo4j-kernel</artifactId>
             <version>${neo4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.neo4j.procedure</groupId>
-            <artifactId>apoc</artifactId>
-            <version>4.1.0.0</version>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-graphdb-api</artifactId>
+            <version>${neo4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.community</groupId>
+            <artifactId>it-test-support</artifactId>
+            <scope>test</scope>
+            <version>${neo4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j.test</groupId>
             <artifactId>neo4j-harness</artifactId>
             <version>${neo4j.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -49,21 +58,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-            <version>${neo4j.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.8.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-graphdb-api</artifactId>
-            <version>${neo4j.version}</version>
-        </dependency>
     </dependencies>
 
 
@@ -77,13 +76,28 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                    <links>
+                        <link>http://neo4j.com/docs/${neo4j.version}/javadocs/</link>
+                    </links>
+                </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <id>attach-javadocs</id>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>jar</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>aggregate</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <phase>site</phase>
                     </execution>
                 </executions>
             </plugin>

@@ -7,14 +7,4 @@ package btree;
 
 public class Root {
 
-    private final long rootId;
-
-    public Root(long rootId) {
-        this.rootId = rootId;
-    }
-
-
-    public long getRootId() {
-        return rootId;
-    }
 }
