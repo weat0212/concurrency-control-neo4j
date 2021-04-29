@@ -7,7 +7,11 @@ import java.io.Serializable;
  * @date 2021/4/26 下午 04:19
  */
 
-public class BTree<K extends Comparable<K>, V> implements Serializable {
+/*
+* Graph Data Simplified B Plus Tree
+* This is a tree for Native-Graph database(Neo4j)
+* */
+public class GSBTree<K extends Comparable<K>, V> implements Serializable {
 
     private volatile Root root;
 
@@ -22,7 +26,7 @@ public class BTree<K extends Comparable<K>, V> implements Serializable {
 
     private final int maxKeys;
 
-    public BTree(int degree) {
+    public GSBTree(int degree) {
         this.degree = degree;
         this.minKeys = degree - 1;
         this.maxKeys = 2 * degree - 1;
