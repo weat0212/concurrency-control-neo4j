@@ -1,16 +1,13 @@
 package btree;
 
 
-import example.BPlusTree;
-import org.neo4j.graphdb.NotFoundException;
-
 import java.util.Optional;
 
 /**
  * @author I-Chung, Wang
  * @date 2021/4/26 下午 04:14
  */
-public class InternalNode extends Node{
+public class InternalNode extends TreeNode {
 
 
     private int maxDegree;
@@ -20,7 +17,7 @@ public class InternalNode extends Node{
     private InternalNode leftSibling;
     private InternalNode rightSibling;
     private Integer[] keys;
-    private Node[] childPointers;
+    private TreeNode[] childPointers;
 
 
     /*
@@ -33,10 +30,10 @@ public class InternalNode extends Node{
         this.minDegree = (int)Math.ceil(m/2.0);
         this.degree = 0;
         this.keys = keys;
-        this.childPointers = new Node[this.maxDegree+1];
+        this.childPointers = new TreeNode[this.maxDegree+1];
     }
 
-    private InternalNode(int m, Integer[] keys, Node[] pointers) {
+    private InternalNode(int m, Integer[] keys, TreeNode[] pointers) {
         this.maxDegree = m;
         this.minDegree = (int)Math.ceil(m/2.0);
         this.degree = linearNullSearch(pointers).get();
@@ -53,7 +50,7 @@ public class InternalNode extends Node{
     /**
      * @param pointer : Point to the child list
      */
-    private void appendChildPointer(Node pointer) {
+    private void appendChildPointer(TreeNode pointer) {
         this.childPointers[degree] = pointer;
         this.degree++;
     }
@@ -64,7 +61,7 @@ public class InternalNode extends Node{
      * @param pointer : pointer within the child pointers
      * @return Optional<Integer> : index Found or Not ? integer : empty
      */
-    private Optional<Integer> findIndexOfPointer(Node pointer) {
+    private Optional<Integer> findIndexOfPointer(TreeNode pointer) {
         for (int i = 0; i < childPointers.length; i++) {
             if (childPointers[i] == pointer) {
                 return Optional.of(i);
@@ -79,7 +76,7 @@ public class InternalNode extends Node{
      * @param pointers
      * @return
      */
-    private Optional<Integer> linearNullSearch(Node[] pointers) {
+    private Optional<Integer> linearNullSearch(TreeNode[] pointers) {
         for (int i = 0; i <  pointers.length; i++) {
             if (pointers[i] == null) { return Optional.of(i); }
         }

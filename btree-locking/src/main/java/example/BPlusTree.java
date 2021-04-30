@@ -1039,7 +1039,7 @@ public class BPlusTree {
 
         // Ensure correct number of arguments
         if (args.length != 1) {
-            System.err.println("usage: java bplustree <file_name>");
+            System.err.println("usage: java BPlusTree <file_name>");
             System.exit(-1);
         }
 
