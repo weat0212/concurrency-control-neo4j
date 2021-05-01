@@ -4,6 +4,7 @@ import example.BPlusTree;
 import org.neo4j.graphdb.Entity;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 
 /**
@@ -55,7 +56,7 @@ public class LeafNode extends TreeNode {
         this.minNumPairs = (int)(Math.ceil(m/2) - 1);
 
         this.dictionary = dps;
-        this.numPairs = linearNullSearch(dps);
+        this.numPairs = linearNullSearch(dps).get();
 
         this.nodeOrRel = entity;
         NODE_ID = entity.getId();
@@ -79,11 +80,11 @@ public class LeafNode extends TreeNode {
         return nodeOrRel.getId();
     }
 
-    private int linearNullSearch(DictionaryPair[] dps) {
+    private Optional<Integer> linearNullSearch(DictionaryPair[] dps) {
         for (int i = 0; i <  dps.length; i++) {
-            if (dps[i] == null) { return i; }
+            if (dps[i] == null) { return Optional.of(i); }
         }
-        return -1;
+        return Optional.empty();
     }
 
     public boolean insert(DictionaryPair dp) {

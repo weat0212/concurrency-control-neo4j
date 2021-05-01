@@ -14,8 +14,6 @@ public class InternalNode extends TreeNode {
     private int minDegree;
     private int degree;
 
-    private InternalNode leftSibling;
-    private InternalNode rightSibling;
     private Integer[] keys;
     private TreeNode[] childPointers;
 
@@ -25,7 +23,7 @@ public class InternalNode extends TreeNode {
     * Constructor
     * ***********
     * */
-    private InternalNode(int m, Integer[] keys) {
+    public InternalNode(int m, Integer[] keys) {
         this.maxDegree = m;
         this.minDegree = (int)Math.ceil(m/2.0);
         this.degree = 0;
@@ -33,7 +31,7 @@ public class InternalNode extends TreeNode {
         this.childPointers = new TreeNode[this.maxDegree+1];
     }
 
-    private InternalNode(int m, Integer[] keys, TreeNode[] pointers) {
+    public InternalNode(int m, Integer[] keys, TreeNode[] pointers) {
         this.maxDegree = m;
         this.minDegree = (int)Math.ceil(m/2.0);
         this.degree = linearNullSearch(pointers).get();
@@ -46,6 +44,31 @@ public class InternalNode extends TreeNode {
     * FUNCTIONS
     * *********
     * */
+
+
+
+    public int getDegree() {
+        return degree;
+    }
+
+    public void setDegree(int degree) {
+        this.degree = degree;
+    }
+    public Integer[] getKeys() {
+        return keys;
+    }
+
+    public void setKeys(Integer[] keys) {
+        this.keys = keys;
+    }
+
+    public TreeNode[] getChildPointers() {
+        return childPointers;
+    }
+
+    public void setChildPointers(TreeNode[] childPointers) {
+        this.childPointers = childPointers;
+    }
 
     /**
      * @param pointer : Point to the child list
