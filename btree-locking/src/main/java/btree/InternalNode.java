@@ -1,6 +1,8 @@
 package btree;
 
 
+import example.BPlusTree;
+
 import java.util.Optional;
 
 /**
@@ -16,6 +18,9 @@ public class InternalNode extends TreeNode {
 
     private Integer[] keys;
     private TreeNode[] childPointers;
+
+    InternalNode leftSibling;
+    InternalNode rightSibling;
 
 
     /*
@@ -70,6 +75,8 @@ public class InternalNode extends TreeNode {
         this.childPointers = childPointers;
     }
 
+
+
     /**
      * @param pointer : Point to the child list
      */
@@ -91,6 +98,49 @@ public class InternalNode extends TreeNode {
             }
         }
         return Optional.empty();
+    }
+
+    private void insertChildPointer(TreeNode pointer, int index) {
+        for (int i = degree - 1; i >= index ;i--) {
+            childPointers[i + 1] = childPointers[i];
+        }
+        this.childPointers[index] = pointer;
+        this.degree++;
+    }
+
+    private boolean isDeficient() {
+        return this.degree < this.minDegree;
+    }
+
+    private boolean isLendable() { return this.degree > this.minDegree; }
+
+    private boolean isMergeable() { return this.degree == this.minDegree; }
+
+    private boolean isOverfull() {
+        return this.degree == maxDegree + 1;
+    }
+
+    private void prependChildPointer(TreeNode pointer) {
+        for (int i = degree - 1; i >= 0 ;i--) {
+            childPointers[i + 1] = childPointers[i];
+        }
+        this.childPointers[0] = pointer;
+        this.degree++;
+    }
+
+    private void removeKey(int index) { this.keys[index] = null; }
+
+
+    private void removePointer(int index) {
+        this.childPointers[index] = null;
+        this.degree--;
+    }
+
+    private void removePointer(TreeNode pointer) {
+        for (int i = 0; i < childPointers.length; i++) {
+            if (childPointers[i] == pointer) { this.childPointers[i] = null; }
+        }
+        this.degree--;
     }
 
 

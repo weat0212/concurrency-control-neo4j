@@ -104,15 +104,20 @@ public class LeafNode extends TreeNode {
         }
     }
 
+    public boolean isDeficient() { return numPairs < minNumPairs; }
+
     private boolean isFull() {
         return numPairs == maxNumPairs;
     }
 
-    public boolean needSplit() {
+    public boolean isLendable() {
         return numPairs > minNumPairs;
     }
 
-    public boolean needMerge() {
+    public boolean isMergeable() {
         return numPairs == minNumPairs;
     }
+
 }
+
+

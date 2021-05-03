@@ -5,6 +5,7 @@ import example.BPlusTree;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
 
 /**
  * @author I-Chung, Wang
@@ -53,7 +54,7 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
      * *********
      * */
 
-    private int binarySearch(DictionaryPair[] dps, int numPairs, int t) {
+    public int binarySearch(DictionaryPair[] dps, int numPairs, int t) {
         Comparator<DictionaryPair> c = new Comparator<DictionaryPair>() {
             @Override
             public int compare(DictionaryPair o1, DictionaryPair o2) {
@@ -65,7 +66,7 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         return Arrays.binarySearch(dps, 0, numPairs, new DictionaryPair(t, 0), c);
     }
 
-    private LeafNode findLeafNode(int key) {
+    public LeafNode findLeafNode(int key) {
 
         // Initialize keys and index variable
         Integer[] keys = this.root.getKeys();
@@ -86,7 +87,7 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         }
     }
 
-    private LeafNode findLeafNode(InternalNode node, int key) {
+    public LeafNode findLeafNode(InternalNode node, int key) {
 
         // Initialize keys and index variable
         Integer[] keys = node.getKeys();
@@ -107,7 +108,7 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         }
     }
 
-    private int findIndexOfPointer(TreeNode[] pointers, LeafNode node) {
+    public int findIndexOfPointer(TreeNode[] pointers, LeafNode node) {
         int i;
         for (i = 0; i < pointers.length; i++) {
             if (pointers[i] == node) { break; }
@@ -115,7 +116,93 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         return i;
     }
 
-    private int getMidpoint() {
+    public int getMidpoint() {
         return (int)Math.ceil((this.m + 1) / 2.0) - 1;
     }
+
+
+    // TODO : Handling Sibling problem
+//    public void handleDeficiency(InternalNode in) {
+//
+//        InternalNode sibling;
+//        InternalNode parent = in.parent;
+//        TreeNode[] childPointers = parent.getChildPointers();
+//
+//        // Remedy deficient root node
+//        if (this.root == in) {
+//            for (TreeNode childPointer : childPointers) {
+//                if (childPointer != null) {
+//                    if (childPointer instanceof InternalNode) {
+//                        this.root = (InternalNode) childPointer;
+//                        this.root.parent = null;
+//                    } else if (childPointer instanceof LeafNode) {
+//                        this.root = null;
+//                    }
+//                }
+//            }
+//        }
+//
+//        // Borrow:
+//        else if (in.leftSibling != null && in.leftSibling.isLendable()) {
+//            sibling = in.leftSibling;
+//        } else if (in.rightSibling != null && in.rightSibling.isLendable()) {
+//            sibling = in.rightSibling;
+//
+//            // Copy 1 key and pointer from sibling (atm just 1 key)
+//            int borrowedKey = sibling.getkeys()[0];
+//            TreeNode pointer = sibling.getChildPointers()[0];
+//
+//            // Copy root key and pointer into parent
+//            in.keys[in.degree - 1] = parent.keys[0];
+//            in.childPointers[in.degree] = pointer;
+//
+//            // Copy borrowedKey into root
+//            parent.keys[0] = borrowedKey;
+//
+//            // Delete key and pointer from sibling
+//            sibling.removePointer(0);
+//            Arrays.sort(sibling.keys);
+//            sibling.removePointer(0);
+//            shiftDown(in.childPointers, 1);
+//        }
+//
+//        // Merge:
+//        else if (in.leftSibling != null && in.leftSibling.isMergeable()) {
+//
+//        } else if (in.rightSibling != null && in.rightSibling.isMergeable()) {
+//            sibling = in.rightSibling;
+//
+//            // Copy rightmost key in parent to beginning of sibling's keys &
+//            // delete key from parent
+//            sibling.keys[sibling.degree - 1] = parent.keys[parent.degree - 2];
+//            Arrays.sort(sibling.keys, 0, sibling.degree);
+//            parent.keys[parent.degree - 2] = null;
+//
+//            // Copy in's child pointer over to sibling's list of child pointers
+//            for (int i = 0; i < in.childPointers.length; i++) {
+//                if (in.childPointers[i] != null) {
+//                    sibling.prependChildPointer(in.childPointers[i]);
+//                    in.childPointers[i].parent = sibling;
+//                    in.removePointer(i);
+//                }
+//            }
+//
+//            // Delete child pointer from grandparent to deficient node
+//            parent.removePointer(in);
+//
+//            // Remove left sibling
+//            sibling.leftSibling = in.leftSibling;
+//        }
+//
+//        // Handle deficiency a level up if it exists
+//        if (parent != null && parent.isDeficient()) {
+//            handleDeficiency(parent);
+//        }
+//    }
+
+    public boolean isEmpty() {
+        return root == null;
+    }
+
+
 }
