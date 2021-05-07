@@ -149,7 +149,7 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
             sibling = in.rightSibling;
 
             // Copy 1 key and pointer from sibling (atm just 1 key)
-            int borrowedKey = sibling.getkeys()[0];
+            int borrowedKey = sibling.getKeys()[0];
             TreeNode pointer = sibling.getChildPointers()[0];
 
             // Copy root key and pointer into parent
@@ -174,9 +174,9 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
 
             // Copy rightmost key in parent to beginning of sibling's keys &
             // delete key from parent
-            sibling.keys[sibling.degree - 1] = parent.keys[parent.degree - 2];
-            Arrays.sort(sibling.keys, 0, sibling.degree);
-            parent.keys[parent.degree - 2] = null;
+            sibling.getKeys()[sibling.getDegree() - 1] = parent.getKeys()[parent.getDegree() - 2];
+            Arrays.sort(sibling.getKeys(), 0, sibling.getDegree());
+            parent.getKeys()[parent.getDegree() - 2] = null;
 
             // Copy in's child pointer over to sibling's list of child pointers
             for (int i = 0; i < childPointers.length; i++) {
@@ -202,6 +202,14 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
 
     public boolean isEmpty() {
         return root == null;
+    }
+
+
+    public void shiftDown(TreeNode[] pointers, int amount) {
+        TreeNode[] newPointers = new TreeNode[this.m + 1];
+        if (pointers.length - amount >= 0)
+            System.arraycopy(pointers, amount, newPointers, amount - amount, pointers.length - amount);
+        pointers = newPointers;
     }
 
 
