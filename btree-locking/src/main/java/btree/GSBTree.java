@@ -122,83 +122,83 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
 
 
     // TODO : Handling Sibling problem
-//    public void handleDeficiency(InternalNode in) {
-//
-//        InternalNode sibling;
-//        InternalNode parent = in.parent;
-//        TreeNode[] childPointers = parent.getChildPointers();
-//
-//        // Remedy deficient root node
-//        if (this.root == in) {
-//            for (TreeNode childPointer : childPointers) {
-//                if (childPointer != null) {
-//                    if (childPointer instanceof InternalNode) {
-//                        this.root = (InternalNode) childPointer;
-//                        this.root.parent = null;
-//                    } else if (childPointer instanceof LeafNode) {
-//                        this.root = null;
-//                    }
-//                }
-//            }
-//        }
-//
-//        // Borrow:
-//        else if (in.leftSibling != null && in.leftSibling.isLendable()) {
-//            sibling = in.leftSibling;
-//        } else if (in.rightSibling != null && in.rightSibling.isLendable()) {
-//            sibling = in.rightSibling;
-//
-//            // Copy 1 key and pointer from sibling (atm just 1 key)
-//            int borrowedKey = sibling.getkeys()[0];
-//            TreeNode pointer = sibling.getChildPointers()[0];
-//
-//            // Copy root key and pointer into parent
-//            in.keys[in.degree - 1] = parent.keys[0];
-//            in.childPointers[in.degree] = pointer;
-//
-//            // Copy borrowedKey into root
-//            parent.keys[0] = borrowedKey;
-//
-//            // Delete key and pointer from sibling
-//            sibling.removePointer(0);
-//            Arrays.sort(sibling.keys);
-//            sibling.removePointer(0);
-//            shiftDown(in.childPointers, 1);
-//        }
-//
-//        // Merge:
-//        else if (in.leftSibling != null && in.leftSibling.isMergeable()) {
-//
-//        } else if (in.rightSibling != null && in.rightSibling.isMergeable()) {
-//            sibling = in.rightSibling;
-//
-//            // Copy rightmost key in parent to beginning of sibling's keys &
-//            // delete key from parent
-//            sibling.keys[sibling.degree - 1] = parent.keys[parent.degree - 2];
-//            Arrays.sort(sibling.keys, 0, sibling.degree);
-//            parent.keys[parent.degree - 2] = null;
-//
-//            // Copy in's child pointer over to sibling's list of child pointers
-//            for (int i = 0; i < in.childPointers.length; i++) {
-//                if (in.childPointers[i] != null) {
-//                    sibling.prependChildPointer(in.childPointers[i]);
-//                    in.childPointers[i].parent = sibling;
-//                    in.removePointer(i);
-//                }
-//            }
-//
-//            // Delete child pointer from grandparent to deficient node
-//            parent.removePointer(in);
-//
-//            // Remove left sibling
-//            sibling.leftSibling = in.leftSibling;
-//        }
-//
-//        // Handle deficiency a level up if it exists
-//        if (parent != null && parent.isDeficient()) {
-//            handleDeficiency(parent);
-//        }
-//    }
+    public void handleDeficiency(InternalNode in) {
+
+        InternalNode sibling;
+        InternalNode parent = in.parent;
+        TreeNode[] childPointers = parent.getChildPointers();
+
+        // Remedy deficient root node
+        if (this.root == in) {
+            for (TreeNode childPointer : childPointers) {
+                if (childPointer != null) {
+                    if (childPointer instanceof InternalNode) {
+                        this.root = (InternalNode) childPointer;
+                        this.root.parent = null;
+                    } else if (childPointer instanceof LeafNode) {
+                        this.root = null;
+                    }
+                }
+            }
+        }
+
+        // Borrow:
+        else if (in.leftSibling != null && in.leftSibling.isLendable()) {
+            sibling = in.leftSibling;
+        } else if (in.rightSibling != null && in.rightSibling.isLendable()) {
+            sibling = in.rightSibling;
+
+            // Copy 1 key and pointer from sibling (atm just 1 key)
+            int borrowedKey = sibling.getkeys()[0];
+            TreeNode pointer = sibling.getChildPointers()[0];
+
+            // Copy root key and pointer into parent
+            in.getKeys()[in.getDegree() - 1] = parent.getKeys()[0];
+            childPointers[in.getDegree()] = pointer;
+
+            // Copy borrowedKey into root
+            parent.getKeys()[0] = borrowedKey;
+
+            // Delete key and pointer from sibling
+            sibling.removePointer(0);
+            Arrays.sort(sibling.getKeys());
+            sibling.removePointer(0);
+            shiftDown(childPointers, 1);
+        }
+
+        // Merge:
+        else if (in.leftSibling != null && in.leftSibling.isMergeable()) {
+
+        } else if (in.rightSibling != null && in.rightSibling.isMergeable()) {
+            sibling = in.rightSibling;
+
+            // Copy rightmost key in parent to beginning of sibling's keys &
+            // delete key from parent
+            sibling.keys[sibling.degree - 1] = parent.keys[parent.degree - 2];
+            Arrays.sort(sibling.keys, 0, sibling.degree);
+            parent.keys[parent.degree - 2] = null;
+
+            // Copy in's child pointer over to sibling's list of child pointers
+            for (int i = 0; i < childPointers.length; i++) {
+                if (childPointers[i] != null) {
+                    sibling.prependChildPointer(childPointers[i]);
+                    childPointers[i].parent = sibling;
+                    in.removePointer(i);
+                }
+            }
+
+            // Delete child pointer from grandparent to deficient node
+            parent.removePointer(in);
+
+            // Remove left sibling
+            sibling.leftSibling = in.leftSibling;
+        }
+
+        // Handle deficiency a level up if it exists
+        if (parent != null && parent.isDeficient()) {
+            handleDeficiency(parent);
+        }
+    }
 
     public boolean isEmpty() {
         return root == null;

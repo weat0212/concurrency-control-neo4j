@@ -59,6 +59,7 @@ public class InternalNode extends TreeNode {
     public void setDegree(int degree) {
         this.degree = degree;
     }
+
     public Integer[] getKeys() {
         return keys;
     }
@@ -80,7 +81,7 @@ public class InternalNode extends TreeNode {
     /**
      * @param pointer : Point to the child list
      */
-    private void appendChildPointer(TreeNode pointer) {
+    public void appendChildPointer(TreeNode pointer) {
         this.childPointers[degree] = pointer;
         this.degree++;
     }
@@ -91,7 +92,7 @@ public class InternalNode extends TreeNode {
      * @param pointer : pointer within the child pointers
      * @return Optional<Integer> : index Found or Not ? integer : empty
      */
-    private Optional<Integer> findIndexOfPointer(TreeNode pointer) {
+    public Optional<Integer> findIndexOfPointer(TreeNode pointer) {
         for (int i = 0; i < childPointers.length; i++) {
             if (childPointers[i] == pointer) {
                 return Optional.of(i);
@@ -100,7 +101,7 @@ public class InternalNode extends TreeNode {
         return Optional.empty();
     }
 
-    private void insertChildPointer(TreeNode pointer, int index) {
+    public void insertChildPointer(TreeNode pointer, int index) {
         for (int i = degree - 1; i >= index ;i--) {
             childPointers[i + 1] = childPointers[i];
         }
@@ -108,19 +109,19 @@ public class InternalNode extends TreeNode {
         this.degree++;
     }
 
-    private boolean isDeficient() {
+    public boolean isDeficient() {
         return this.degree < this.minDegree;
     }
 
-    private boolean isLendable() { return this.degree > this.minDegree; }
+    public boolean isLendable() { return this.degree > this.minDegree; }
 
-    private boolean isMergeable() { return this.degree == this.minDegree; }
+    public boolean isMergeable() { return this.degree == this.minDegree; }
 
-    private boolean isOverfull() {
+    public boolean isOverfull() {
         return this.degree == maxDegree + 1;
     }
 
-    private void prependChildPointer(TreeNode pointer) {
+    public void prependChildPointer(TreeNode pointer) {
         for (int i = degree - 1; i >= 0 ;i--) {
             childPointers[i + 1] = childPointers[i];
         }
@@ -128,15 +129,15 @@ public class InternalNode extends TreeNode {
         this.degree++;
     }
 
-    private void removeKey(int index) { this.keys[index] = null; }
+    public void removeKey(int index) { this.keys[index] = null; }
 
 
-    private void removePointer(int index) {
+    public void removePointer(int index) {
         this.childPointers[index] = null;
         this.degree--;
     }
 
-    private void removePointer(TreeNode pointer) {
+    public void removePointer(TreeNode pointer) {
         for (int i = 0; i < childPointers.length; i++) {
             if (childPointers[i] == pointer) { this.childPointers[i] = null; }
         }
@@ -149,7 +150,7 @@ public class InternalNode extends TreeNode {
      * @param pointers
      * @return
      */
-    private Optional<Integer> linearNullSearch(TreeNode[] pointers) {
+    public Optional<Integer> linearNullSearch(TreeNode[] pointers) {
         for (int i = 0; i <  pointers.length; i++) {
             if (pointers[i] == null) { return Optional.of(i); }
         }
