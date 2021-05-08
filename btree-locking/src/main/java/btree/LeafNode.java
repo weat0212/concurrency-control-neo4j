@@ -13,6 +13,9 @@ import java.util.Optional;
  */
 public class LeafNode extends TreeNode {
 
+    public LeafNode leftSibling;
+    public LeafNode rightSibling;
+
     enum TypeOfLeaf {
         Node,
         Relationship
@@ -102,6 +105,15 @@ public class LeafNode extends TreeNode {
 
             return true;
         }
+    }
+
+    public void delete(int index) {
+
+        // Delete dictionary pair from leaf
+        this.dictionary[index] = null;
+
+        // Decrement numPairs
+        numPairs--;
     }
 
     public boolean isDeficient() { return numPairs < minNumPairs; }
