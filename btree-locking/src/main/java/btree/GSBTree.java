@@ -57,13 +57,10 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
      * */
 
     public int binarySearch(DictionaryPair[] dps, int numPairs, int t) {
-        Comparator<DictionaryPair> c = new Comparator<DictionaryPair>() {
-            @Override
-            public int compare(DictionaryPair o1, DictionaryPair o2) {
-                Integer a = o1.key;
-                Integer b = o2.key;
-                return a.compareTo(b);
-            }
+        Comparator<DictionaryPair> c = (o1, o2) -> {
+            Integer a = o1.key;
+            Integer b = o2.key;
+            return a.compareTo(b);
         };
         return Arrays.binarySearch(dps, 0, numPairs, new DictionaryPair(t, 0), c);
     }
@@ -209,8 +206,9 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
 
     public void shiftDown(TreeNode[] pointers, int amount) {
         TreeNode[] newPointers = new TreeNode[this.m + 1];
-        if (pointers.length - amount >= 0)
-            System.arraycopy(pointers, amount, newPointers, amount - amount, pointers.length - amount);
+        for (int i = amount; i < pointers.length; i++) {
+            newPointers[i - amount] = pointers[i];
+        }
         pointers = newPointers;
     }
 
