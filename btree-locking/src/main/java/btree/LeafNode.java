@@ -21,7 +21,7 @@ public class LeafNode extends TreeNode {
         Relationship
     }
 
-    private final long NODE_ID;
+//    private final long NODE_ID;
 //    TODO : Detect the type(Node or Relationship) of data
 //    private final TypeOfLeaf TYPE_OF_LEAF;
 
@@ -40,20 +40,20 @@ public class LeafNode extends TreeNode {
      * */
 
 
-    public LeafNode(int m, DictionaryPair dp, long node_id, Entity entity) {
+    public LeafNode(int m, DictionaryPair dp) {
         this.maxNumPairs = m - 1;
         this.minNumPairs = (int)(Math.ceil(m/2) - 1);
         this.dictionary = new DictionaryPair[m];
 
-        this.nodeOrRel = entity;
-        NODE_ID = entity.getId();
+//        this.nodeOrRel = entity;
+//        NODE_ID = entity.getId();
 
         this.numPairs = 0;
         this.insert(dp);
     }
 
 
-    public LeafNode(int m, DictionaryPair[] dps, InternalNode parent, Entity entity) {
+    public LeafNode(int m, DictionaryPair[] dps, InternalNode parent) {
 
         this.maxNumPairs = m - 1;
         this.minNumPairs = (int)(Math.ceil(m/2) - 1);
@@ -61,8 +61,8 @@ public class LeafNode extends TreeNode {
         this.dictionary = dps;
         this.numPairs = linearNullSearch(dps).get();
 
-        this.nodeOrRel = entity;
-        NODE_ID = entity.getId();
+//        this.nodeOrRel = entity;
+//        NODE_ID = entity.getId();
 
         this.parent = parent;
     }
