@@ -1,12 +1,10 @@
 package btree;
 
-import example.BPlusTree;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Optional;
 
 /**
  * @author I-Chung, Wang
@@ -27,27 +25,25 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
     private static final int DEFAULT_DEGREE = 3;
 
 
-    //Degree
-    private final int degree;
-    private final int minKeys;
-    private final int maxKeys;
-
-
     /*
      * ***********
      * Constructor
      * ***********
      * */
-    public GSBTree(int degree) {
-        this.degree = degree;
-        this.minKeys = degree - 1;
-        this.maxKeys = 2 * degree - 1;
-        this.root = new InternalNode(m, null);
+
+    public GSBTree() {
+        this(DEFAULT_DEGREE);
     }
 
-    public void setRoot(InternalNode root) {
-        this.root = root;
+    /**
+     * Constructor
+     * @param m: the order (fanout) of the B+ tree
+     */
+    public GSBTree(int m) {
+        this.m = m;
+        this.root = null;
     }
+
 
 
     /*
@@ -56,6 +52,15 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
      * *********
      * */
 
+    /**
+     * This method performs a standard binary search on a sorted
+     * DictionaryPair[] and returns the index of the dictionary pair
+     * with target key t if found. Otherwise, this method returns a negative
+     * value.
+     * @param dps: list of dictionary pairs sorted by key within leaf node
+     * @param t: target key value of dictionary pair being searched for
+     * @return index of the target value if found, else a negative value
+     */
     public int binarySearch(DictionaryPair[] dps, int numPairs, int t) {
         Comparator<DictionaryPair> c = (o1, o2) -> {
             Integer a = o1.key;
@@ -65,6 +70,13 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         return Arrays.binarySearch(dps, 0, numPairs, new DictionaryPair(t, 0), c);
     }
 
+    /**
+     * This method starts at the root of the B+ tree and traverses down the
+     * tree via key comparisons to the corresponding leaf node that holds 'key'
+     * within its dictionary.
+     * @param key: the unique key that lies within the dictionary of a LeafNode object
+     * @return the LeafNode object that contains the key within its dictionary
+     */
     public LeafNode findLeafNode(int key) {
 
         // Initialize keys and index variable
@@ -107,6 +119,13 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         }
     }
 
+    /**
+     * Given a list of pointers to Node objects, this method returns the index of
+     * the pointer that points to the specified 'node' LeafNode object.
+     * @param pointers: a list of pointers to Node objects
+     * @param node: a specific pointer to a LeafNode
+     * @return (int) index of pointer in list of pointers
+     */
     public int findIndexOfPointer(TreeNode[] pointers, LeafNode node) {
         int i;
         for (i = 0; i < pointers.length; i++) {
@@ -115,13 +134,24 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         return i;
     }
 
+    /**
+     * This is a simple method that returns the midpoint (or lower bound
+     * depending on the context of the method invocation) of the max degree m of
+     * the B+ tree.
+     * @return (int) midpoint/lower bound
+     */
     public int getMidpoint() {
         return (int)Math.ceil((this.m + 1) / 2.0) - 1;
     }
 
 
-    // TODO : Handling Sibling problem
+    /**
+     * Given a deficient InternalNode in, this method remedies the deficiency
+     * through borrowing and merging.
+     * @param in: a deficient InternalNode
+     */
     public void handleDeficiency(InternalNode in) {
+        // TODO : Handling Sibling problem
 
         InternalNode sibling;
         InternalNode parent = in.parent;
@@ -199,11 +229,20 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         }
     }
 
+    /**
+     * This is a simple method that determines if the B+ tree is empty or not.
+     * @return a boolean indicating if the B+ tree is empty or not
+     */
     public boolean isEmpty() {
         return root == null;
     }
 
-
+    /**
+     * This method is used to shift down a set of pointers that are prepended
+     * by null values.
+     * @param pointers: the list of pointers that are to be shifted
+     * @param amount: the amount by which the pointers are to be shifted
+     */
     public void shiftDown(TreeNode[] pointers, int amount) {
         TreeNode[] newPointers = new TreeNode[this.m + 1];
         for (int i = amount; i < pointers.length; i++) {
@@ -212,6 +251,11 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         pointers = newPointers;
     }
 
+    /**
+     * This is a specialized sorting method used upon lists of DictionaryPairs
+     * that may contain interspersed null values.
+     * @param dictionary: a list of DictionaryPair objects
+     */
     private void sortDictionary(DictionaryPair[] dictionary) {
         Arrays.sort(dictionary, (o1, o2) -> {
             if (o1 == null && o2 == null) { return 0; }
@@ -221,6 +265,17 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         });
     }
 
+    /**
+     * This method splits a single dictionary into two dictionaries where all
+     * dictionaries are of equal length, but each of the resulting dictionaries
+     * holds half of the original dictionary's non-null values. This method is
+     * primarily used when splitting a node within the B+ tree. The dictionary of
+     * the specified LeafNode is modified in place. The method returns the
+     * remainder of the DictionaryPairs that are no longer within ln's dictionary.
+     * @param ln: list of DictionaryPairs to be split
+     * @param split: the index at which the split occurs
+     * @return DictionaryPair[] of the two split dictionaries
+     */
     private DictionaryPair[] splitDictionary(LeafNode ln, int split) {
 
         DictionaryPair[] dictionary = ln.dictionary;
@@ -238,6 +293,13 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         return halfDict;
     }
 
+    /**
+     * When an insertion into the B+ tree causes an overfull node, this method
+     * is called to remedy the issue, i.e. to split the overfull node. This method
+     * calls the sub-methods of splitKeys() and splitChildPointers() in order to
+     * split the overfull node.
+     * @param in: an overfull InternalNode that is to be split
+     */
     private void splitInternalNode(InternalNode in) {
 
         // Acquire parent
@@ -293,6 +355,14 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         }
     }
 
+    /**
+     * This method modifies a list of Integer-typed objects that represent keys
+     * by removing half of the keys and returning them in a separate Integer[].
+     * This method is used when splitting an InternalNode object.
+     * @param keys: a list of Integer objects
+     * @param split: the index where the split is to occur
+     * @return Integer[] of removed keys
+     */
     private Integer[] splitKeys(Integer[] keys, int split) {
 
         Integer[] halfKeys = new Integer[this.m];
@@ -309,6 +379,15 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         return halfKeys;
     }
 
+    /**
+     * This method modifies the InternalNode 'in' by removing all pointers within
+     * the childPointers after the specified split. The method returns the removed
+     * pointers in a list of their own to be used when constructing a new
+     * InternalNode sibling.
+     * @param in: an InternalNode whose childPointers will be split
+     * @param split: the index at which the split in the childPointers begins
+     * @return a Node[] of the removed pointers
+     */
     private TreeNode[] splitChildPointers(InternalNode in, int split) {
 
         TreeNode[] pointers = in.getChildPointers();
@@ -323,6 +402,15 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         return halfPointers;
     }
 
+
+    /**
+     * This method performs a standard linear search on a sorted
+     * DictionaryPair[] and returns the index of the first null entry found.
+     * Otherwise, this method returns a -1. This method is primarily used in
+     * place of binarySearch() when the target t = null.
+     * @param dps: list of dictionary pairs sorted by key within leaf node
+     * @return index of the target value if found, else -1
+     */
     private int linearNullSearch(DictionaryPair[] dps) {
         for (int i = 0; i <  dps.length; i++) {
             if (dps[i] == null) { return i; }
@@ -330,6 +418,15 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         return -1;
     }
 
+
+    /**
+     * This method performs a standard linear search on a list of Node[] pointers
+     * and returns the index of the first null entry found. Otherwise, this
+     * method returns a -1. This method is primarily used in place of
+     * binarySearch() when the target t = null.
+     * @param pointers: list of Node[] pointers
+     * @return index of the target value if found, else -1
+     */
     private int linearNullSearch(TreeNode[] pointers) {
         for (int i = 0; i <  pointers.length; i++) {
             if (pointers[i] == null) { return i; }
