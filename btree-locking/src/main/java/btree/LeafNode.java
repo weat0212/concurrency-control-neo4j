@@ -16,10 +16,6 @@ public class LeafNode extends TreeNode {
     public LeafNode leftSibling;
     public LeafNode rightSibling;
 
-    enum TypeOfLeaf {
-        Node,
-        Relationship
-    }
 
 //    private final long NODE_ID;
 //    TODO : Detect the type(Node or Relationship) of data

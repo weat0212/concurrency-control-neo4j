@@ -18,9 +18,7 @@ public class DictionaryPair implements Comparable<DictionaryPair> {
     //TODO : Change return type
     @Override
     public int compareTo(DictionaryPair o) {
-        if (key == o.key) { return 0;
-        } else if (key > o.key) { return 1;
-        } else { return -1; }
+        return Integer.compare(key, o.key);
     }
 
 }

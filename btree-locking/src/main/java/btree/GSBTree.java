@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
 
 /**
  * @author I-Chung, Wang
@@ -312,7 +313,7 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         TreeNode[] halfPointers = splitChildPointers(in, midpoint);
 
         // Change degree of original InternalNode in
-        in.setDegree(linearNullSearch(in.getChildPointers()));
+        in.setDegree(linearNullSearch(in.getChildPointers()).get());
 
         // Create new sibling internal node and add half of keys and pointers
         InternalNode sibling = new InternalNode(this.m, halfKeys, halfPointers);
@@ -427,11 +428,11 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
      * @param pointers: list of Node[] pointers
      * @return index of the target value if found, else -1
      */
-    private int linearNullSearch(TreeNode[] pointers) {
+    public Optional<Integer> linearNullSearch(TreeNode[] pointers) {
         for (int i = 0; i <  pointers.length; i++) {
-            if (pointers[i] == null) { return i; }
+            if (pointers[i] == null) { return Optional.of(i); }
         }
-        return -1;
+        return Optional.empty();
     }
 
     /*
