@@ -691,6 +691,7 @@ public class GSBTree<K extends Comparable<K>, V> implements Serializable {
         int index = binarySearch(dps, ln.numPairs, key);
 
         // If index negative, the key doesn't exist in B+ tree
+        // TODO : Negative key needed for relationship
         if (index < 0) {
             return null;
         } else {
